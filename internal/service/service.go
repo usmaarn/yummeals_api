@@ -1,6 +1,8 @@
 package service
 
-import "github.com/usmaarn/yummeals_api/internal/storage"
+import (
+	"github.com/usmaarn/yummeals_api/internal/repository"
+)
 
 type Service struct {
 	AuthService  *AuthService
@@ -8,9 +10,9 @@ type Service struct {
 	TokenService *TokenService
 }
 
-func RegisterServices(s *storage.Storage) *Service {
-	userService := NewUserService(s)
-	tokenService := NewTokenService(s)
+func RegisterServices(r *repository.Repository) *Service {
+	userService := NewUserService(r)
+	tokenService := NewTokenService(r)
 	authService := NewAuthService(userService, tokenService)
 
 	return &Service{

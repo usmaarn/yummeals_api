@@ -6,14 +6,14 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/usmaarn/yummeals_api/internal/dto"
+	"github.com/usmaarn/yummeals_api/internal/repository"
 	"github.com/usmaarn/yummeals_api/internal/service"
-	"github.com/usmaarn/yummeals_api/internal/storage"
 )
 
 type Api struct {
-	Validate *validator.Validate
-	Service  *service.Service
-	Storage  *storage.Storage
+	Validate   *validator.Validate
+	Service    *service.Service
+	Repository *repository.Repository
 }
 
 func (a *Api) BindRequestBody(r *http.Request, entity any) error {

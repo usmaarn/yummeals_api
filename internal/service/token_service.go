@@ -6,15 +6,15 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/usmaarn/yummeals_api/internal/model"
-	"github.com/usmaarn/yummeals_api/internal/storage"
+	"github.com/usmaarn/yummeals_api/internal/repository"
 )
 
 type TokenService struct {
-	storage *storage.Storage
+	repo *repository.Repository
 }
 
-func NewTokenService(s *storage.Storage) *TokenService {
-	return &TokenService{storage: s}
+func NewTokenService(repo *repository.Repository) *TokenService {
+	return &TokenService{repo: repo}
 }
 
 func (s *TokenService) CreateToken(userID int64) (*model.Token, error) {
@@ -26,7 +26,7 @@ func (s *TokenService) CreateToken(userID int64) (*model.Token, error) {
 		RefreshTokenExpiresAt: time.Now().Add(30 * 24 * time.Hour), // 30 days
 	}
 
-	err := s.storage.TokenStorage.Create(&token)
+	err := s.repo.TokenRepo.Create(&token)
 	if err != nil {
 		fmt.Printf("Error creating token: %v\n", err)
 	}

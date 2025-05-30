@@ -5,20 +5,21 @@ import (
 
 	"github.com/usmaarn/yummeals_api/internal/dto"
 	"github.com/usmaarn/yummeals_api/internal/model"
-	"github.com/usmaarn/yummeals_api/internal/storage"
+	"github.com/usmaarn/yummeals_api/internal/repository"
+
 	"github.com/usmaarn/yummeals_api/pkg/utils/constants"
 )
 
 type UserService struct {
-	storage *storage.Storage
+	repo *repository.UserRepository
 }
 
-func NewUserService(s *storage.Storage) *UserService {
-	return &UserService{storage: s}
+func NewUserService(repo *repository.UserRepository) *UserService {
+	return &UserService{repo}
 }
 
 func (s *UserService) FindByEmail(email string) (*model.User, error) {
-	return s.storage.UserStorage.FindOneBy("email", email)
+	return s.repo.FindOneBy("email", email)
 }
 
 func (s *UserService) CreateUser(dto *dto.CreateUserRequest) (*model.User, error) {
@@ -30,6 +31,6 @@ func (s *UserService) CreateUser(dto *dto.CreateUserRequest) (*model.User, error
 		Status:      constants.UserStatusActive, // Set the user status to active by default
 	}
 
-	err := s.storage.UserStorage.Save(&newUser)
+	err := s.repo.Save(&newUser)
 	return &newUser, err
 }

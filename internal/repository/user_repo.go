@@ -1,4 +1,4 @@
-package storage
+package repository
 
 import (
 	"fmt"
@@ -7,15 +7,15 @@ import (
 	"github.com/usmaarn/yummeals_api/internal/model"
 )
 
-type UserStorage struct {
+type UserRepository struct {
 	db *sqlx.DB
 }
 
-func NewUserStorage(db *sqlx.DB) *UserStorage {
-	return &UserStorage{db}
+func NewUserRepository(db *sqlx.DB) *UserRepository {
+	return &UserRepository{db}
 }
 
-func (s *UserStorage) FindOneBy(column string, value any) (*model.User, error) {
+func (s *UserRepository) FindOneBy(column string, value any) (*model.User, error) {
 	user := &model.User{}
 	query := fmt.Sprintf("SELECT * FROM users WHERE %s = $1", column)
 	err := s.db.Get(user, query, value)
@@ -25,17 +25,17 @@ func (s *UserStorage) FindOneBy(column string, value any) (*model.User, error) {
 	return user, nil
 }
 
-func (s *UserStorage) Delete(id int64) error {
+func (s *UserRepository) Delete(id int64) error {
 	// Implement the logic to delete a user by ID from the database
 	// This might involve executing an SQL DELETE statement
 	return nil
 }
 
-func (s *UserStorage) FindAll(users []*model.User) error {
+func (s *UserRepository) FindAll(users []*model.User) error {
 	return s.db.Select(users, "SELECT * FROM users WHERE deleted_at IS NULL")
 }
 
-func (s *UserStorage) Count() (int64, error) {
+func (s *UserRepository) Count() (int64, error) {
 	var count int64
 	err := s.db.Get(&count, "SELECT COUNT(*) FROM users")
 	if err != nil {
@@ -44,7 +44,7 @@ func (s *UserStorage) Count() (int64, error) {
 	return count, nil
 }
 
-func (s *UserStorage) Exists(email string) (bool, error) {
+func (s *UserRepository) Exists(email string) (bool, error) {
 	if count, err := s.Count(); err != nil {
 		return false, err
 	} else {
@@ -52,7 +52,7 @@ func (s *UserStorage) Exists(email string) (bool, error) {
 	}
 }
 
-func (s *UserStorage) Save(user *model.User) error {
+func (s *UserRepository) Save(user *model.User) error {
 	var err error
 
 	if user.ID == 0 {
@@ -68,7 +68,7 @@ func (s *UserStorage) Save(user *model.User) error {
 	return nil
 }
 
-func (s *UserStorage) SoftDelete(id int64) error {
+func (s *UserRepository) SoftDelete(id int64) error {
 	// Implement the logic to soft delete a user by ID from the database
 	_, err := s.db.Exec("UPDATE users SET deleted_at = NOW() WHERE id = $1", id)
 	return err
