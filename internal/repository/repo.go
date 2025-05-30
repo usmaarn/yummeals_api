@@ -8,7 +8,7 @@ type Repository struct {
 	TokenRepo *TokenRepository
 }
 
-func NewRepo(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		db:        db,
 		UserRepo:  NewUserRepository(db),
