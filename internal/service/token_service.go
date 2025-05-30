@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,7 +18,7 @@ func NewTokenService(s *storage.Storage) *TokenService {
 }
 
 func (s *TokenService) CreateToken(userID int64) (*model.Token, error) {
-	token := &model.Token{
+	token := model.Token{
 		UserID:                userID,
 		AccessToken:           uuid.NewString(),
 		RefreshToken:          uuid.NewString(),
@@ -25,6 +26,9 @@ func (s *TokenService) CreateToken(userID int64) (*model.Token, error) {
 		RefreshTokenExpiresAt: time.Now().Add(30 * 24 * time.Hour), // 30 days
 	}
 
-	err := s.storage.TokenStorage.Create(token)
-	return token, err
+	err := s.storage.TokenStorage.Create(&token)
+	if err != nil {
+		fmt.Printf("Error creating token: %v\n", err)
+	}
+	return &token, err
 }

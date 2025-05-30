@@ -30,7 +30,6 @@ func (s *AuthService) Register(dto *dto.CreateUserRequest) (*model.Token, error)
 
 	return s.tokenService.CreateToken(user.ID)
 }
-
 func (s *AuthService) Login(dto dto.LoginUserRequest) (*model.Token, error) {
 	user, err := s.userService.FindByEmail(dto.Email)
 	if err != nil {

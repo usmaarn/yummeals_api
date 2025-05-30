@@ -14,12 +14,19 @@ func NewTokenStorage(db *sqlx.DB) *TokenStorage {
 }
 
 func (s *TokenStorage) Create(token *model.Token) error {
-	return s.db.Get(&token, `
+	row := s.db.QueryRow(`
 	INSERT INTO tokens (user_id, access_token, refresh_token, access_token_expires_at, refresh_token_expires_at)
 		VALUES ($1, $2, $3, $4, $5)
- 	RETURNING *
+ 	RETURNING id
 	`,
 		token.UserID, token.AccessToken, token.RefreshToken, token.AccessTokenExpiresAt, token.RefreshTokenExpiresAt)
+
+	if row.Err() != nil {
+		return row.Err()
+	}
+
+	err := row.Scan(&token.ID)
+	return err
 }
 
 func (s *TokenStorage) FindByUserID(userID int64) (*model.Token, error) {
