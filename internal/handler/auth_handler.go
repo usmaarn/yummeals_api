@@ -3,26 +3,35 @@ package handler
 import (
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/usmaarn/yummeals_api/internal/service"
+	"github.com/usmaarn/yummeals_api/internal/dto"
+	"github.com/usmaarn/yummeals_api/pkg/utils"
 )
 
 type AuthHandler struct {
-	validate    *validator.Validate
-	authService *service.AuthService
+	api *utils.Api
 }
 
-func NewAuthHandler(s *service.AuthService, v *validator.Validate) *AuthHandler {
-	return &AuthHandler{v, s}
+func NewAuthHandler(api *utils.Api) *AuthHandler {
+	return &AuthHandler{api: api}
 }
 
 func (h *AuthHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic for user registration
-	// This might involve validating input, creating a user in the database, etc.
+
 }
+
 func (h *AuthHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic for user login
-	// This might involve validating credentials, generating a token, etc.
+	var dto dto.LoginUserRequest
+	if err := h.api.BindRequestBody(r, &dto); err != nil {
+		h.api.ErrorResponse(w, http.StatusBadRequest, "Invalid request body", nil)
+		return
+	}
+
+	token, err := h.api.Service.AuthService.Login(dto)
+	if err != nil {
+		h.api.ErrorResponse(w, http.StatusBadRequest, "Login failed", map[string]string{"message": err.Error()})
+		return
+	}
+	h.api.SuccessResponse(w, http.StatusOK, token)
 }
 
 func (h *AuthHandler) LogoutHandler(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,5 @@
+PORT=8000
+
+GOOSE_DRIVER=postgres
+GOOSE_DBSTRING="postgresql://postgres:admin@localhost:5432/yummeals_app?sslmode=disable"
+GOOSE_MIGRATION_DIR=./pkg/migrations

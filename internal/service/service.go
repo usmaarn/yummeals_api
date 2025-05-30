@@ -3,11 +3,19 @@ package service
 import "github.com/usmaarn/yummeals_api/internal/storage"
 
 type Service struct {
-	Auth *AuthService
+	AuthService  *AuthService
+	UserService  *UserService
+	TokenService *TokenService
 }
 
 func RegisterServices(s *storage.Storage) *Service {
+	userService := NewUserService(s)
+	tokenService := NewTokenService(s)
+	authService := NewAuthService(userService, tokenService)
+
 	return &Service{
-		Auth: NewAuthService(s),
+		AuthService:  authService,
+		UserService:  userService,
+		TokenService: tokenService,
 	}
 }
