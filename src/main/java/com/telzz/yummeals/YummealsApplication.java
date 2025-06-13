@@ -9,5 +9,4 @@ public class YummealsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(YummealsApplication.class, args);
 	}
-
 }
