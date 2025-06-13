@@ -1,12 +1,30 @@
 
 package com.telzz.yummeals.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "dish_table")
 public class Dish {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
     private String category;
     private String image;
+
+    public Dish(Long id, String name, String description, String category, String image){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.image = image;
+    }
 
     public void setId(Long id){
         this.id = id;
